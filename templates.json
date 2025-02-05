@@ -1,0 +1,256 @@
+[
+    {
+        "layout": "main",
+        "name": "Général",
+        "templates": [
+            {
+                "name": "agreement",
+                "description": "Affichage des conditions d'inscription à votre forum",
+                "id": 101
+            },
+            {
+                "name": "buy_credits",
+                "description": "Achat participatif",
+                "id": 105
+            },
+            {
+                "name": "confirm_body",
+                "description": "Page type pour les demandes de confirmation",
+                "id": 103
+            },
+            {
+                "name": "error_body",
+                "description": "Page pour les erreurs de saisie",
+                "id": 106
+            },
+            {
+                "name": "faq_body",
+                "description": "Utilisé pour la FAQ de votre forum",
+                "id": 107
+            },
+            {
+                "name": "faq_dhtml",
+                "description": "Faq version dhtml",
+                "id": 108
+            },
+            { "name": "footer_widgets", "description": "", "id": 135 },
+            {
+                "name": "greeting_popup",
+                "description": "Pop up d'anniversaire",
+                "id": 109
+            },
+            {
+                "name": "index_body",
+                "description": "Page d'accueil",
+                "id": 110
+            },
+            {
+                "name": "index_box",
+                "description": "Page d'accueil - affichage des catégories",
+                "id": 111
+            },
+            {
+                "name": "jumpbox",
+                "description": "Sauter vers un forum",
+                "id": 112
+            },
+            {
+                "name": "memberlist_body",
+                "description": "Liste des membres",
+                "id": 113
+            },
+            {
+                "name": "mentions_tooltip",
+                "description": "Apparence de la fenêtre de prévisualisation des profils au survol du tag des noms d'utilisateur",
+                "id": 134
+            },
+            {
+                "name": "message_body",
+                "description": "Message d'erreur d'exécution",
+                "id": 114
+            },
+            {
+                "name": "overall_footer_begin",
+                "description": "Début du bas de page",
+                "id": 115
+            },
+            {
+                "name": "overall_footer_end",
+                "description": "Fin du bas de page",
+                "id": 133
+            },
+            {
+                "name": "overall_header",
+                "description": "Haut de page",
+                "id": 116
+            },
+            {
+                "name": "search_body",
+                "description": "Page de recherche",
+                "id": 118
+            },
+            {
+                "name": "search_results_posts",
+                "description": "Résultats de recherche par messages",
+                "id": 119
+            },
+            {
+                "name": "search_results_topics",
+                "description": "Résultats de recherche par sujets",
+                "id": 120
+            },
+            {
+                "name": "search_username",
+                "description": "Rechercher un utilisateur",
+                "id": 121
+            },
+            {
+                "name": "simple_header",
+                "description": "Haut de page simple (utilisé sur quelques pages)",
+                "id": 123
+            },
+            {
+                "name": "topics_blog_box",
+                "description": "Affichage d'un blog",
+                "id": 130
+            },
+            {
+                "name": "topics_list_box",
+                "description": "Affichage des sujets",
+                "id": 124
+            },
+            {
+                "name": "viewcomments_body",
+                "description": "Affichage des commentaires",
+                "id": 131
+            },
+            {
+                "name": "viewforum_body",
+                "description": "Affichage d'un forum",
+                "id": 125
+            },
+            {
+                "name": "viewonline_body",
+                "description": "Visualisation de qui est en ligne",
+                "id": 126
+            },
+            {
+                "name": "viewtopic_body",
+                "description": "Affichage d'un sujet",
+                "id": 127
+            },
+            {
+                "name": "viewtopic_poll_ballot",
+                "description": "Affichage d'un sondage",
+                "id": 128
+            },
+            {
+                "name": "viewtopic_poll_result",
+                "description": "Affichage du résultat d'un sondage",
+                "id": 129
+            }
+        ]
+    },
+    {
+        "layout": "post",
+        "name": "Poster & Messages privés",
+        "templates": [
+            {
+                "name": "posting_body",
+                "description": "Page d'envoi de messages",
+                "id": 501
+            },
+            {
+                "name": "posting_confirm_code",
+                "description": "Code de confirmation",
+                "id": 503
+            },
+            {
+                "name": "posting_poll_body",
+                "description": "Partie sondage de la page d'envoi de messages",
+                "id": 504
+            },
+            {
+                "name": "posting_preview",
+                "description": "Partie prévisualisation de la page d'envoi de messages",
+                "id": 505
+            },
+            {
+                "name": "posting_topic_review",
+                "description": "Partie revue du sujet de la page d'envoi de messages",
+                "id": 509
+            },
+            {
+                "name": "privmsg_topic_review",
+                "description": "Revue du sujet",
+                "id": 510
+            },
+            {
+                "name": "privmsgs_body",
+                "description": "Liste des messages privés",
+                "id": 511
+            },
+            {
+                "name": "privmsgs_popup",
+                "description": "Popup d'avertissement de nouveau message privé",
+                "id": 512
+            },
+            {
+                "name": "privmsgs_preview",
+                "description": "Prévisualisation d'un message privé",
+                "id": 513
+            },
+            {
+                "name": "privmsgs_read_body",
+                "description": "Affichage d'un message privé",
+                "id": 514
+            }
+        ]
+    },
+    {
+        "layout": "profil",
+        "name": "Profil",
+        "templates": [
+            {
+                "name": "profile_add_body",
+                "description": "Enregistrement/modification d'un utilisateur",
+                "id": 701
+            },
+            {
+                "name": "profile_avatar_gallery",
+                "description": "Galerie d'avatars",
+                "id": 702
+            },
+            {
+                "name": "profile_edit_signature",
+                "description": "Signature",
+                "id": 704
+            },
+            {
+                "name": "profile_send_email",
+                "description": "Envoyer à un ami",
+                "id": 705
+            },
+            {
+                "name": "profile_send_pass",
+                "description": "Page mot de passe perdu",
+                "id": 706
+            },
+            {
+                "name": "profile_view_body",
+                "description": "Page d'affichage du profil simple",
+                "id": 708
+            },
+            {
+                "name": "rpg_sheet",
+                "description": "Feuille de personnage",
+                "id": 710
+            },
+            {
+                "name": "rpg_sheet_edit",
+                "description": "Feuille de personnage",
+                "id": 711
+            }
+        ]
+    }
+]

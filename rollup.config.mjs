@@ -3,11 +3,11 @@ import commonjs from "@rollup/plugin-commonjs";
 import terser from "@rollup/plugin-terser";
 
 export default {
-    input: "src/index.js", // Fichier source principal
+    input: "src/index.js",
     output: {
-        file: "dist/indstall.js", // Fichier final
-        format: "iife", // Format adapté aux navigateurs
+        file: "dist/indstall.js",
+        format: "iife",
         name: "Indstall",
     },
-    plugins: [resolve(), commonjs(), terser()],
+    plugins: [json(), terser(), resolve(), commonjs()],
 };

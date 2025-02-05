@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
-        "watch": "rollup -w",
+        "watch": "rollup -w -c",
         "serve": "http-server ./dist"
     },
     "author": "",
@@ -11,9 +11,13 @@
     "description": "",
     "devDependencies": {
         "@rollup/plugin-commonjs": "^28.0.2",
+        "@rollup/plugin-json": "^6.1.0",
         "@rollup/plugin-node-resolve": "^16.0.0",
         "@rollup/plugin-terser": "^0.4.4",
         "http-server": "^14.1.1",
         "rollup": "^4.34.1"
+    },
+    "dependencies": {
+        "fs": "^0.0.1-security"
     }
 }

@@ -1,6 +1,6 @@
-import { createUI } from "./ui.js";
+import { createInstallerUI } from "./ui.js";
 
 (function () {
-    console.log("Blank Theme Installer Loaded!");
-    createUI();
+    console.log("Installateur chargé !");
+    createInstallerUI();
 })();
