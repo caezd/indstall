@@ -1,6 +1,6 @@
 import { createInstallerUI } from "./ui.js";
 
 (function () {
-    console.log("Installateur chargé !");
+    console.log("🚀 Installateur chargé !");
     createInstallerUI();
 })();

@@ -20,68 +20,42 @@ export function createInstallerUI() {
 
     let style = document.createElement("style");
     style.innerHTML = `
-        #blankThemeInstaller {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
-        #installerContent {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-            max-width: 400px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-        }
-        #progressContainer {
-            width: 100%;
-            height: 10px;
-            background: #e0e0e0;
-            border-radius: 5px;
-            margin-top: 15px;
-            overflow: hidden;
-            position: relative;
-        }
-        #progressBar {
-            width: 0%;
-            height: 100%;
-            background: #28a745;
-            transition: width 0.3s ease-in-out;
-        }
-        #statusMessage {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #333;
-        }
+        #progressContainer { width: 100%; height: 10px; background: #e0e0e0; border-radius: 5px; margin-top: 15px; }
+        #progressBar { width: 0%; height: 100%; background: #28a745; transition: width 0.3s ease-in-out, background 0.3s ease-in-out; }
+        .progress-error { background: #dc3545 !important; }
+        #installButton:disabled { background: #b5b5b5; cursor: not-allowed; }
     `;
 
     document.head.appendChild(style);
     document.body.appendChild(installerContainer);
 
-    document
-        .getElementById("closeInstaller")
-        .addEventListener("click", function () {
-            installerContainer.remove();
-            style.remove();
-        });
+    const installButton = document.getElementById("installButton");
 
-    document
-        .getElementById("installButton")
-        .addEventListener("click", function () {
-            document.getElementById("statusMessage").innerText =
-                "Début de l'installation...";
-            startInstallation(updateProgress);
+    installButton.addEventListener("click", () => {
+        installButton.disabled = true; // Désactiver le bouton une fois l'installation commencée
+        document.getElementById("statusMessage").innerText =
+            "Début de l'installation...";
+        startInstallation(updateProgress, () => {
+            installButton.disabled = false; // Réactiver le bouton si l'installation échoue
         });
+    });
+
+    document.getElementById("closeInstaller").addEventListener("click", () => {
+        installerContainer.remove();
+        style.remove();
+    });
 }
 
-function updateProgress(percentage, status) {
-    document.getElementById("progressBar").style.width = percentage + "%";
-    document.getElementById("statusMessage").innerText = status;
+export function updateProgress(percentage, status, isError = false) {
+    let progressBar = document.getElementById("progressBar");
+    let statusMessage = document.getElementById("statusMessage");
+
+    progressBar.style.width = percentage + "%";
+    statusMessage.innerText = status;
+
+    if (isError) {
+        progressBar.classList.add("progress-error");
+        statusMessage.style.color = "red";
+        document.getElementById("installButton").disabled = false; // Réactiver le bouton en cas d'erreur
+    }
 }

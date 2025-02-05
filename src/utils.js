@@ -26,6 +26,10 @@ export const Encode = function (object) {
     return data.slice(0, -1); // Retire le dernier "&"
 };
 
+export function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 export function Fetcher(url, options, body) {
     return fetch(url, this.fetchOptions(options, body));
 }

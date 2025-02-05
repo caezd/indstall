@@ -1,93 +1,103 @@
-import { Encode, Fetcher } from "./utils.js";
-
+import { fetchFilesFromGitHub, fetchFileContent } from "./github.js";
+import { injectContent } from "./forumactif.js";
 import templatesData from "../templates.json";
 
 const LOCATION = new URL(window.location);
 const ROOT = `${LOCATION.protocol}//${LOCATION.host}`;
-
 let auth;
 
-export async function startInstallation(updateProgress) {
+export async function startInstallation(updateProgress, onErrorCallback) {
     updateProgress(0, "Vérification des droits d'administration...");
-    console.log(templatesData);
 
-    auth = await fetch(ROOT)
-        .then((res) => res.text())
-        .then((res) => {
-            const parser = new DOMParser();
-            const htmlDocument = parser.parseFromString(res, "text/html");
-            const admin_link = htmlDocument.querySelector('a[href^="/admin/"]');
-            if (!admin_link) return false;
+    try {
+        auth = await fetch(ROOT)
+            .then((res) => res.text())
+            .then((res) => {
+                const parser = new DOMParser();
+                const htmlDocument = parser.parseFromString(res, "text/html");
+                const adminLink =
+                    htmlDocument.querySelector('a[href^="/admin/"]');
+                if (!adminLink) throw "Accès administrateur requis.";
 
-            const url = new URLSearchParams(admin_link.href);
-            return {
-                tid: url.get("tid"),
-                _tc: url.get("_tc"),
-            };
-        });
+                const url = new URLSearchParams(adminLink.href);
+                return { tid: url.get("tid"), _tc: url.get("_tc") };
+            });
 
-    if (!auth) throw "must be logged and admin";
+        if (!auth) throw "Droits administrateur insuffisants.";
+    } catch (error) {
+        updateProgress(100, "Erreur : " + error, true);
+        return;
+    }
 
     try {
         updateProgress(5, "Récupération des fichiers du Blank Theme...");
 
-        const githubRepo =
-            "https://api.github.com/repos/Kim-Bnx/Blank-Theme/contents/";
-        let response = await fetch(githubRepo);
-        let files = await response.json();
+        let cssFiles = await fetchFilesFromGitHub("CSS");
+        let jsFiles = await fetchFilesFromGitHub("Javascript");
+        let templateLayouts = await fetchFilesFromGitHub("Templates");
 
-        let totalTasks = files.filter(
-            (file) =>
-                file.name.endsWith(".css") ||
-                file.name.endsWith(".js") ||
-                file.name.endsWith(".html")
-        ).length;
+        let totalTasks =
+            cssFiles.length + jsFiles.length + templateLayouts.length;
         let completedTasks = 0;
 
-        function updateTaskStatus(taskMessage) {
+        async function updateTaskStatus(taskMessage) {
             completedTasks++;
             let progress = Math.round((completedTasks / totalTasks) * 100);
             updateProgress(progress, taskMessage);
         }
+        let processedFiles = new Set();
 
-        // Installation du CSS
-        let cssFile = files.find((file) => file.name.endsWith(".css"));
-        if (cssFile) {
-            let cssContent = await fetch(cssFile.download_url).then((res) =>
-                res.text()
-            );
-            await injectCSS(cssContent, updateTaskStatus);
+        if (cssFiles.length > 0) {
+            let cssFile = cssFiles.find((file) => file.name.endsWith(".css"));
+            if (cssFile && !processedFiles.has(cssFile.name)) {
+                let content = await fetchFileContent(cssFile.download_url);
+                await injectContent("css", content, updateTaskStatus, auth);
+                processedFiles.add(cssFile.name);
+            }
         }
 
-        // Installation des fichiers JS
-        let jsFiles = files.filter((file) => file.name.endsWith(".js"));
-        for (let jsFile of jsFiles) {
-            let jsContent = await fetch(jsFile.download_url).then((res) =>
-                res.text()
-            );
-            await injectJS(jsContent, jsFile.name, updateTaskStatus);
+        /* for (let file of jsFiles) {
+            let content = await fetchFileContent(file.download_url);
+            await injectContent("js", content, updateTaskStatus, auth);
         }
 
-        // Installation des fichiers templates
-        let templateFiles = files.filter((file) => file.name.endsWith(".html"));
-        for (let templateFile of templateFiles) {
-            let templateContent = await fetch(templateFile.download_url).then(
-                (res) => res.text()
-            );
-            await injectTemplate(
-                templateFile.name,
-                templateContent,
-                updateTaskStatus
-            );
-        }
+        for (let layout of templateLayouts) {
+        let capitalizedLayout = capitalize(layout.name);
+            let templateFiles = await fetchFilesFromGitHub(`Templates/${capitalizedLayout}`);
+            for (let file of templateFiles) {
+                let templateInfo = findTemplateInfo(
+                    layout.name,
+                    file.name.replace(".tpl", "")
+                );
+                if (templateInfo) {
+                    let content = await fetchFileContent(file.download_url);
+                    await injectContent(
+                        "template",
+                        content,
+                        updateTaskStatus,
+                        auth,
+                        {
+                            templateId: templateInfo.id,
+                            layout: layout.name,
+                        }
+                    );
+                }
+            }
+        } */
 
         updateProgress(100, "Installation terminée !");
     } catch (error) {
-        updateProgress(100, "Erreur lors de l'installation !");
+        updateProgress(100, "Erreur lors de l'installation !", true);
         console.error(error);
     }
 }
 
+function findTemplateInfo(layout, name) {
+    let layoutData = templatesData.find((l) => l.layout === layout);
+    return layoutData?.templates.find((t) => t.name === name) || null;
+}
+
+/*
 // Injecter le CSS dans le panneau d'admin
 async function injectCSS(cssCode, updateStatus) {
     updateStatus("Injection du CSS...");
@@ -170,56 +180,11 @@ async function injectTemplate(templateName, templateCode, updateStatus) {
     );
 }
 
-function createIframe(url) {
-    let iframe = document.createElement("iframe");
-    iframe.src = url;
-    iframe.style.width = "100%";
-    iframe.style.height = "600px"; // Permet de voir si tout se charge bien (peut être caché ensuite)
-    iframe.style.position = "fixed";
-    iframe.style.top = "50px";
-    iframe.style.left = "50%";
-    iframe.style.transform = "translateX(-50%)";
-    iframe.style.zIndex = "9999";
-    iframe.style.border = "1px solid black";
-    document.body.appendChild(iframe);
-    return iframe;
-}
-
-function pasteIntoTextarea(iframeDocument, text) {
-    let cssTextarea = iframeDocument.querySelector("textarea#edit_code");
-    if (!cssTextarea) {
-        console.error("❌ Impossible de trouver l'éditeur de CSS !");
-        return;
-    }
-
-    // Mettre le texte dans le presse-papiers
-    navigator.clipboard
-        .writeText(text)
-        .then(() => {
-            console.log("📋 CSS copié dans le presse-papiers !");
-
-            // Focaliser le champ
-            cssTextarea.focus();
-
-            // Simuler Ctrl + V pour coller
-            let pasteEvent = new ClipboardEvent("paste", {
-                clipboardData: new DataTransfer(),
-            });
-            pasteEvent.clipboardData.setData("text/plain", text);
-            cssTextarea.dispatchEvent(pasteEvent);
-
-            console.log("✅ CSS collé dans l'éditeur !");
-        })
-        .catch((err) => {
-            console.error("❌ Erreur lors de la copie du CSS :", err);
-        });
-}
-
 function injectCodeMirrorCSS(iframeDocument, cssCode) {
     // Trouver l'élément textarea d'origine
     let cssTextarea = iframeDocument.querySelector("textarea#edit_code");
     if (!cssTextarea) {
-        console.error("❌ Impossible de trouver l'éditeur de CSS !");
+        
         return;
     }
 
@@ -229,11 +194,11 @@ function injectCodeMirrorCSS(iframeDocument, cssCode) {
         : null;
 
     if (!cmInstance) {
-        console.error("❌ Impossible de trouver l'instance CodeMirror !");
+        
         return;
     }
 
     // Insérer le CSS dans CodeMirror via son API
     cmInstance.setValue(cssCode);
-    console.log("✅ CSS injecté dans CodeMirror !");
 }
+*/
